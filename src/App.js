@@ -1,10 +1,11 @@
 import React from 'react'
-import {DebounceInput} from 'react-debounce-input';
+import {Route} from 'react-router';
 // import * as BooksAPI from './BooksAPI'
 import './App.css'
 import { getAll, search } from './BooksAPI'
 
-import Category from './components/category';
+import Search from './components/search';
+import ListBooks from './components/listBooks';
 
 class BooksApp extends React.Component {
   constructor(props) {
@@ -83,66 +84,21 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-
-                <DebounceInput
-                  minLength={2}
-                  placeholder="Search by title or author"
-                  debounceTimeout={1000}
-                  onChange={this.onTextCahange}
-                />
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid">
-                {(this.state.searchBooks.length) ? <Category
-                  books={this.state.searchBooks}
-                  handleChangeCategory={this.changeCategory}
-                /> : null}
-              </ol>
-            </div>
-          </div>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                <Category
-                  headline="Currently Reading"
-                  books={this.state.currentlyReading}
-                  handleChangeCategory={this.changeCategory}
-                />
-                <Category
-                  headline="Want to Read"
-                  books={this.state.wantToRead}
-                  handleChangeCategory={this.changeCategory}
-                />
-                <Category
-                  headline="Read"
-                  books={this.state.read}
-                  handleChangeCategory={this.changeCategory}
-                />
-              </div>
-            </div>
-            <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-            </div>
-          </div>
-        )}
+        <Route path='/search' component={() => (
+          <Search
+            onTextCahange={this.onTextCahange}
+            searchBooks={this.state.searchBooks}
+            changeCategory={this.changeCategory}
+          />
+        )} />
+        <Route exact path='/' render={() => (
+          <ListBooks
+            currentlyReading={this.state.currentlyReading}
+            wantToRead={this.state.wantToRead}
+            read={this.state.read}
+            changeCategory={this.changeCategory}
+          />
+        )} />
       </div>
     )
   }
