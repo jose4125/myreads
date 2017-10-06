@@ -1,4 +1,5 @@
 import React from 'react'
+import {DebounceInput} from 'react-debounce-input';
 // import * as BooksAPI from './BooksAPI'
 import './App.css'
 import { getAll, search } from './BooksAPI'
@@ -68,6 +69,7 @@ class BooksApp extends React.Component {
   }
   
   onTextCahange(event) {
+    console.log('event', event)
     this.setState({searchValue: event.target.value})
     search(this.state.searchValue).then((res) => {
       if (res && !res.error) {
@@ -94,13 +96,13 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input
-                  type="text"
+
+                <DebounceInput
+                  minLength={2}
                   placeholder="Search by title or author"
-                  value={this.state.searchValue}
+                  debounceTimeout={1000}
                   onChange={this.onTextCahange}
                 />
-
               </div>
             </div>
             <div className="search-books-results">
