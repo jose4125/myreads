@@ -18,6 +18,7 @@ class BooksApp extends React.Component {
       currentlyReading: [],
       wantToRead: [],
       read: [],
+      none: [],
       showSearchPage: false,
       searchValue: '',
       searchBooks: [],
@@ -53,7 +54,9 @@ class BooksApp extends React.Component {
   
   changeCategory(category, book) {
     this.setState((prevState) => {
-      prevState[book.shelf] = this.removeBook(book.shelf, book.id);
+      if (book.shelf) {
+        prevState[book.shelf] = this.removeBook(book.shelf, book.id);
+      }
       prevState[category] = prevState[category].concat(book);
       book.shelf = category;
     })
@@ -70,7 +73,6 @@ class BooksApp extends React.Component {
   }
   
   onTextCahange(event) {
-    console.log('event', event)
     this.setState({searchValue: event.target.value})
     search(this.state.searchValue).then((res) => {
       if (res && !res.error) {
