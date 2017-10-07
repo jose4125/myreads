@@ -5,6 +5,32 @@ import { Link } from 'react-router-dom';
 import Category from './category';
 
 function ListBooks(props) {
+  const shelves = [
+    {
+      id: 'currentlyReading',
+      title: 'Currently Reading',
+      books: props.currentlyReading
+    },
+    {
+      id: 'wantToREad',
+      title: 'Want to Read',
+      books: props.wantToRead
+    },
+    {
+      id: 'read',
+      title: 'Read',
+      books: props.read
+    },
+  ]
+  
+  const renderShelves = (shelf) => (
+    <Category
+      headline={shelf.title}
+      books={shelf.books}
+      handleChangeCategory={props.changeCategory}
+      key={shelf.id}
+    />
+  )
 
   return (
     <div className="list-books">
@@ -13,21 +39,7 @@ function ListBooks(props) {
       </div>
       <div className="list-books-content">
         <div>
-          <Category
-            headline="Currently Reading"
-            books={props.currentlyReading}
-            handleChangeCategory={props.changeCategory}
-          />
-          <Category
-            headline="Want to Read"
-            books={props.wantToRead}
-            handleChangeCategory={props.changeCategory}
-          />
-          <Category
-            headline="Read"
-            books={props.read}
-            handleChangeCategory={props.changeCategory}
-          />
+          {shelves.map(renderShelves)}
         </div>
       </div>
       <div className="open-search">
