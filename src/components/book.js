@@ -44,7 +44,7 @@ function book (props) {
         <div className="book-top">
           <div
             className="book-cover"
-            style={{ width: 128, height: 193, backgroundImage: image}}
+            style={{backgroundImage: image}}
           />
           <div className="book-shelf-changer">
             <select onChange={props.onChange} value={shelfValue}>
@@ -60,7 +60,7 @@ function book (props) {
           </div>
         </div>
         <div className="book-title">{title}</div>
-        <div className="book-authors">{(props.authors && authors.length) ?authors.join(', ') : ''}</div>
+        <div className="book-authors">{(authors && authors.length) ?authors.join(', ') : ''}</div>
       </div>
     </li>
   )
