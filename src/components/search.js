@@ -5,6 +5,17 @@ import {DebounceInput} from 'react-debounce-input';
 import Category from './category';
 
 function Search(props) {
+  const arrayBooks = () => {
+    const keys = Object.keys(props.searchBooks);
+    
+    if(keys.length) {
+      return keys.map(key => {
+        return props.searchBooks[key];
+      });
+    }
+    return keys
+  }
+  
   return (
     <div className="search-books">
       <div className="search-books-bar">
@@ -20,10 +31,10 @@ function Search(props) {
       </div>
       <div className="search-books-results">
         <ol className="books-grid">
-          {(props.searchBooks.length) ? <Category
-            books={props.searchBooks}
+          <Category
+            books={arrayBooks()}
             handleChangeCategory={props.changeCategory}
-          /> : null}
+          />
         </ol>
       </div>
     </div>
@@ -32,7 +43,7 @@ function Search(props) {
 
 Search.propTypes = {
   onTextCahange: PropTypes.func,
-  searchBooks: PropTypes.array,
+  searchBooks: PropTypes.any,
   changeCategory: PropTypes.func,
 };
 

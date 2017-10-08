@@ -12,7 +12,7 @@ function ListBooks(props) {
       books: props.currentlyReading
     },
     {
-      id: 'wantToREad',
+      id: 'wantToRead',
       title: 'Want to Read',
       books: props.wantToRead
     },
@@ -23,15 +23,25 @@ function ListBooks(props) {
     },
   ]
   
+  const filterBooks = (shelf) => {
+    return Object.keys(props.allBooks)
+    .map(key => {
+      return props.allBooks[key];
+    })
+    .filter(book => {
+      return  shelf.id === book.shelf
+    })
+  }
+  
   const renderShelves = (shelf) => (
     <Category
       headline={shelf.title}
-      books={shelf.books}
+      books={filterBooks(shelf)}
       handleChangeCategory={props.changeCategory}
       key={shelf.id}
     />
   )
-
+  
   return (
     <div className="list-books">
       <div className="list-books-title">

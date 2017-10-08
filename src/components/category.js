@@ -12,7 +12,7 @@ function Category ({headline, books, handleChangeCategory}) {
       key={book.id}
     />
   };
-
+  
   return (
     <div className="bookshelf">
       <h2 className="bookshelf-title">{headline}</h2>
@@ -27,7 +27,7 @@ function Category ({headline, books, handleChangeCategory}) {
 
 Category.propTypes = {
   handleChangeCategory: PropTypes.func,
-  books: PropTypes.array,
+  books: PropTypes.any,
   headline: PropTypes.string,
 };
 

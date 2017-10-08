@@ -17,22 +17,17 @@ class BooksApp extends React.Component {
 
     this.state = {
       allBooks: {},
-      currentlyReading: [],
-      wantToRead: [],
-      read: [],
-      none: [],
-      showSearchPage: false,
       searchValue: '',
-      searchBooks: [],
+      searchBooks: {},
     }
   }
   
   objectBooks(res) {
+    let allBooksObj = {};
     res.forEach(book => {
-      this.setState((prevState) => {
-        prevState.allBooks[book.id] = book;
-      })
+      allBooksObj[book.id] = book;
     })
+    return allBooksObj;
   }
   
   filterByCategory(category, res) {
@@ -41,12 +36,7 @@ class BooksApp extends React.Component {
   
   componentDidMount() {
     getAll().then((res) => {
-      this.objectBooks(res);
-      this.setState((prevState) => ({
-        currentlyReading: this.filterByCategory('currentlyReading', res),
-        wantToRead: this.filterByCategory('wantToRead', res),
-        read: this.filterByCategory('read', res),
-      }))
+      this.setState({allBooks: this.objectBooks(res)})
     });
   }
   
@@ -56,12 +46,24 @@ class BooksApp extends React.Component {
   
   changeCategory(category, book) {
     (book.shelf !== category && update(book, category).then((res) => {
+  
       this.setState((prevState) => {
-        if (book.shelf) {
-          prevState[book.shelf] = this.removeBook(book.shelf, book.id);
+        let bookInAllBooks = prevState.allBooks[book.id];
+        let bookInSearchBooks = prevState.searchBooks[book.id];
+
+        if(bookInAllBooks){
+          bookInAllBooks.shelf = category;
+        } else {
+          bookInAllBooks = book;
+          bookInAllBooks = category;
         }
         
+        if(bookInSearchBooks) {
+          bookInSearchBooks.shelf = category;
+        }
+  
         if(category === 'none') {
+          console.log('state', prevState)
           return Object.assign({}, prevState, {
             allBooks: Object.keys(prevState.allBooks).reduce((result, key) => {
               if (key !== book.id) {
@@ -71,13 +73,8 @@ class BooksApp extends React.Component {
             }, {})
           });
         }
-        prevState[category] = prevState[category].concat(book);
-        book.shelf = category;
-        prevState.allBooks[book.id] = book;
-      })
+      });
     }))
-    
-    
   }
   
   addShelf(res) {
@@ -93,7 +90,7 @@ class BooksApp extends React.Component {
     this.setState({searchValue: event.target.value})
     search(this.state.searchValue).then((res) => {
       if (res && !res.error) {
-        this.setState({searchBooks: this.addShelf(res)})
+        this.setState({searchBooks: this.objectBooks(this.addShelf(res))})
       }
       
     });
@@ -102,7 +99,7 @@ class BooksApp extends React.Component {
   
   goBack(event) {
     event.preventDefault();
-    this.setState({searchBooks: []});
+    this.setState({searchBooks: {}});
     this.props.history.push('/');
   }
 
@@ -119,9 +116,7 @@ class BooksApp extends React.Component {
         )} />
         <Route exact path='/' render={() => (
           <ListBooks
-            currentlyReading={this.state.currentlyReading}
-            wantToRead={this.state.wantToRead}
-            read={this.state.read}
+            allBooks={this.state.allBooks}
             changeCategory={this.changeCategory}
           />
         )} />
