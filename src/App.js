@@ -1,8 +1,9 @@
 import React from 'react'
 import {Route} from 'react-router';
+import { withRouter } from 'react-router-dom';
 // import * as BooksAPI from './BooksAPI'
 import './App.css'
-import { getAll, search } from './BooksAPI'
+import { getAll, search, update } from './BooksAPI'
 
 import Search from './components/search';
 import ListBooks from './components/listBooks';
@@ -12,6 +13,7 @@ class BooksApp extends React.Component {
     super(props);
     this.changeCategory = this.changeCategory.bind(this);
     this.onTextCahange = this.onTextCahange.bind(this);
+    this.goBack = this.goBack.bind(this);
 
     this.state = {
       allBooks: {},
@@ -53,13 +55,30 @@ class BooksApp extends React.Component {
   }
   
   changeCategory(category, book) {
-    this.setState((prevState) => {
-      if (book.shelf) {
-        prevState[book.shelf] = this.removeBook(book.shelf, book.id);
-      }
-      prevState[category] = prevState[category].concat(book);
-      book.shelf = category;
-    })
+    (book.shelf !== category && update(book, category).then((res) => {
+      this.setState((prevState) => {
+        if (book.shelf) {
+          prevState[book.shelf] = this.removeBook(book.shelf, book.id);
+        }
+        
+        if(category === 'none') {
+          return Object.assign({}, prevState, {
+            allBooks: Object.keys(prevState.allBooks).reduce((result, key) => {
+              if (key !== book.id) {
+                result[key] = prevState.allBooks[key];
+              }
+              return result;
+            }, {})
+          });
+        }
+        prevState[category] = prevState[category].concat(book);
+        book.shelf = category;
+        if(!this.state.allBooks.hasOwnProperty(book.id)) {
+          prevState.allBooks[book.id] = book;
+        }
+      })
+    }))
+    
     
   }
   
@@ -82,6 +101,12 @@ class BooksApp extends React.Component {
     });
     
   }
+  
+  goBack(event) {
+    event.preventDefault();
+    this.setState({searchBooks: []});
+    this.props.history.push('/');
+  }
 
   render() {
     return (
@@ -91,6 +116,7 @@ class BooksApp extends React.Component {
             onTextCahange={this.onTextCahange}
             searchBooks={this.state.searchBooks}
             changeCategory={this.changeCategory}
+            back={this.goBack}
           />
         )} />
         <Route exact path='/' render={() => (
@@ -106,4 +132,4 @@ class BooksApp extends React.Component {
   }
 }
 
-export default BooksApp
+export default withRouter(BooksApp)

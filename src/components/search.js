@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
 import {DebounceInput} from 'react-debounce-input';
 import Category from './category';
@@ -9,7 +8,7 @@ function Search(props) {
   return (
     <div className="search-books">
       <div className="search-books-bar">
-        <Link className="close-search" to="/">Close</Link>
+        <a className="close-search" onClick={props.back}>Close</a>
         <div className="search-books-input-wrapper">
           <DebounceInput
             minLength={2}
