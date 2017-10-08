@@ -73,9 +73,7 @@ class BooksApp extends React.Component {
         }
         prevState[category] = prevState[category].concat(book);
         book.shelf = category;
-        if(!this.state.allBooks.hasOwnProperty(book.id)) {
-          prevState.allBooks[book.id] = book;
-        }
+        prevState.allBooks[book.id] = book;
       })
     }))
     
